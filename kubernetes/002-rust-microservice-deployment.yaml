@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rust-microservice
+  template:
+    metadata:
+      labels:
+        app: rust-microservice
+    spec:
+      runtimeClassName: wasmedge
+      containers:
+      - name: rust-microservice
+        image: ghcr.io/aalonsolopez/demo-microservice:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          value: mysql://root:whalehello@mariadb.default.svc.cluster.local:3306/mysql
+        - name: RUST_BACKTRACE
+          value: full
+        - name: DNS_SERVER
+          value: 10.152.183.10:53
